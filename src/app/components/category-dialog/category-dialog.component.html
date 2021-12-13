@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{data.dialogTitle}}</h1>
+<mat-dialog-content class="dialog-content">
+  <mat-form-field appearance="fill" color="accent" #input>
+    <mat-label>Назва категорії</mat-label>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+  <mat-form-field appearance="fill" color="accent">
+    <mat-label>Опис категорії</mat-label>
+    <textarea matInput [(ngModel)]="data.description" rows="5"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Скасувати</button>
+  <button mat-button [mat-dialog-close]="data" [disabled]="!data.name || !data.description"
+    color="accent">{{data.dialogAction}}</button>
+</div>
