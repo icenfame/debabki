@@ -1,0 +1,7 @@
+.toolbar {
+  justify-content: center;
+}
+
+.toolbar span {
+  font-weight: 300;
+}

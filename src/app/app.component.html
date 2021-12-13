@@ -1,12 +1,13 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="toolbar">
   <span>DeBabki</span>
-  <mat-tab-group color="accent">
-    <mat-tab label="First"> Content 1 </mat-tab>
-    <mat-tab label="Second"> Content 2 </mat-tab>
-    <mat-tab label="Third"> Content 3 </mat-tab>
-  </mat-tab-group>
 </mat-toolbar>
 
-<h1>Hello world</h1>
+<mat-tab-group color="accent" mat-align-tabs="center">
+  <mat-tab label="Категорії">
+    <app-categories></app-categories>
+  </mat-tab>
+  <mat-tab label="Витрати та доходи"> Content 2 </mat-tab>
+  <mat-tab label="Статистика"> Content 3 </mat-tab>
+</mat-tab-group>
 
 <router-outlet></router-outlet>

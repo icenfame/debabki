@@ -1,0 +1,27 @@
+<mat-progress-bar mode="indeterminate" color="accent" *ngIf="categories.length === 0"></mat-progress-bar>
+
+<div class="categories">
+  <mat-card *ngFor="let category of categories; let i = index" class="category-card">
+    <mat-card-title-group>
+      <mat-card-title>{{category.name}}</mat-card-title>
+      <mat-card-subtitle>Категорія</mat-card-subtitle>
+    </mat-card-title-group>
+    <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+    <mat-card-content>
+      <p>
+        {{category.description}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button
+        (click)="openUpdateDialog(category.name, category.description, category._id, i)">РЕДАГУВАТИ</button>
+      <button mat-button color="warn" (click)="onDelete(category._id)">ВИДАЛИТИ</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <h1 *ngIf="categories.length === 0">Список пустий</h1>
+</div>
+
+<button mat-fab matTooltip="Додати категорію" class="add-fab" (click)="openAddDialog()">
+  <i class="material-icons">add</i>
+</button>
