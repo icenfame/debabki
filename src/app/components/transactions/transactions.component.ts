@@ -2,27 +2,27 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 
-import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
+import { TransactionDialogComponent } from '../transaction-dialog/transaction-dialog.component';
 
 @Component({
-  selector: 'app-categories',
-  templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.css'],
+  selector: 'app-transactions',
+  templateUrl: './transactions.component.html',
+  styleUrls: ['./transactions.component.css'],
 })
-export class CategoriesComponent implements OnInit {
-  categories: any = [];
+export class TransactionsComponent implements OnInit {
+  transactions: any = [];
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.http.get('/categories').subscribe((res) => {
-      this.categories = res;
+    this.http.get('/transactions').subscribe((res) => {
+      this.transactions = res;
     });
   }
 
   onDelete(id: string): void {
-    this.http.delete(`/categories/${id}`).subscribe(() => {
-      this.categories = this.categories.filter(
+    this.http.delete(`/transactions/${id}`).subscribe(() => {
+      this.transactions = this.transactions.filter(
         (category: any) => category._id !== id
       );
     });
@@ -30,21 +30,24 @@ export class CategoriesComponent implements OnInit {
 
   openAddDialog(): void {
     this.dialog
-      .open(CategoryDialogComponent, {
-        data: { dialogTitle: 'Додавання категорії', dialogAction: 'Додати' },
+      .open(TransactionDialogComponent, {
+        data: { dialogTitle: 'Додавання транзакції', dialogAction: 'Додати' },
       })
       .afterClosed()
       .subscribe((dialog) => {
         // Check if submitted
         if (dialog) {
           this.http
-            .post('/categories', {
-              name: dialog.name,
+            .post('/transactions', {
+              categoryId: dialog.categoryId,
+              type: dialog.type,
+              amount: dialog.amount,
+              date: dialog.date,
               description: dialog.description,
             })
             .subscribe((document) => {
-              // Add to categories array
-              this.categories = [...this.categories, document];
+              // Add to transactions array
+              this.transactions = [...this.transactions, document];
             });
         }
       });
@@ -57,7 +60,7 @@ export class CategoriesComponent implements OnInit {
     index: number
   ): void {
     this.dialog
-      .open(CategoryDialogComponent, {
+      .open(TransactionDialogComponent, {
         data: {
           dialogTitle: 'Редагування категорії',
           dialogAction: 'Редагувати',
@@ -71,14 +74,14 @@ export class CategoriesComponent implements OnInit {
         // Check if submitted
         if (dialog) {
           this.http
-            .put(`/categories/${id}`, {
+            .put(`/transactions/${id}`, {
               name: dialog.name,
               description: dialog.description,
             })
             .subscribe(() => {
-              // Update categories array
-              this.categories[index].name = dialog.name;
-              this.categories[index].description = dialog.description;
+              // Update transactions array
+              this.transactions[index].name = dialog.name;
+              this.transactions[index].description = dialog.description;
             });
         }
       });

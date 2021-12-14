@@ -5,3 +5,7 @@
 .toolbar span {
   font-weight: 300;
 }
+
+.tab-icon {
+  margin-right: 8px;
+}

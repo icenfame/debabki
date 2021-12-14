@@ -1,11 +1,11 @@
-.categories {
+.transactions {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.category-card {
+.transaction-card {
   width: 300px;
   margin: 8px;
   height: fit-content;

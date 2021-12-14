@@ -2,12 +2,31 @@
   <span>DeBabki</span>
 </mat-toolbar>
 
-<mat-tab-group color="accent" mat-align-tabs="center">
-  <mat-tab label="Категорії">
+<mat-tab-group color="accent" mat-align-tabs="center" dynamicHeight>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">category</mat-icon>
+      Категорії
+    </ng-template>
+
     <app-categories></app-categories>
   </mat-tab>
-  <mat-tab label="Витрати та доходи"> Content 2 </mat-tab>
-  <mat-tab label="Статистика"> Content 3 </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">paid</mat-icon>
+      Витрати та доходи
+    </ng-template>
+
+    <app-transactions></app-transactions>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="tab-icon">analytics</mat-icon>
+      Статистика
+    </ng-template>
+
+    Статистика
+  </mat-tab>
 </mat-tab-group>
 
 <router-outlet></router-outlet>
