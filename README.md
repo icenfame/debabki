@@ -4,6 +4,10 @@ Personal finance manager web app.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.4.
 
+## Install dependencies
+
+Run `npm install` to install all required packages for the app.
+
 ## Running app
 
 Run `npm run all` for a full app with client and server. Navigate to `http://localhost:5000/`. The app will automatically rebuild if you change any of the source files.
