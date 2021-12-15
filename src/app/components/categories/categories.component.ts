@@ -21,17 +21,21 @@ export class CategoriesComponent implements OnInit {
   }
 
   onDelete(id: string): void {
-    this.http.delete(`/categories/${id}`).subscribe(() => {
-      this.categories = this.categories.filter(
-        (category: any) => category._id !== id
-      );
-    });
+    if (
+      confirm('Ви дійсно хочете видалити категорію та всі транзакції у ній?')
+    ) {
+      this.http.delete(`/categories/${id}`).subscribe(() => {
+        this.categories = this.categories.filter(
+          (category: any) => category._id !== id
+        );
+      });
+    }
   }
 
   openAddDialog(): void {
     this.dialog
       .open(CategoryDialogComponent, {
-        data: { dialogTitle: 'Додавання категорії', dialogAction: 'Додати' },
+        data: { dialogTitle: 'Додавання категорії', dialogAction: 'ДОДАТИ' },
       })
       .afterClosed()
       .subscribe((dialog) => {
@@ -60,7 +64,7 @@ export class CategoriesComponent implements OnInit {
       .open(CategoryDialogComponent, {
         data: {
           dialogTitle: 'Редагування категорії',
-          dialogAction: 'Редагувати',
+          dialogAction: 'РЕДАГУВАТИ',
           id,
           name,
           description,

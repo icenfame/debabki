@@ -18,6 +18,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatRippleModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppComponent } from './app.component';
 import { CategoriesComponent } from './components/categories/categories.component';
@@ -53,8 +59,18 @@ import { TransactionDialogComponent } from './components/transaction-dialog/tran
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatExpansionModule,
+    MatDividerModule,
+    MatListModule,
+    MatChipsModule,
+    MatRippleModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'uk',
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
