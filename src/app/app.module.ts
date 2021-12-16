@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -67,7 +67,7 @@ import { TransactionDialogComponent } from './components/transaction-dialog/tran
   ],
   providers: [
     {
-      provide: MAT_DATE_LOCALE,
+      provide: LOCALE_ID,
       useValue: 'uk',
     },
   ],
