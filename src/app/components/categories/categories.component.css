@@ -23,6 +23,11 @@
   bottom: 32px;
 }
 
+.flex p {
+  white-space: normal;
+  margin: 0;
+}
+
 .text-accent {
   color: #69f0ae;
 }
@@ -68,19 +73,19 @@
 }
 
 .mt-1 {
-  margin-top: 1rem;
+  margin-top: 1rem !important;
 }
 
 .mb-1 {
-  margin-bottom: 1rem;
+  margin-bottom: 1rem !important;
 }
 
 .mr-1 {
-  margin-right: 1rem;
+  margin-right: 1rem !important;
 }
 
 .ml-1 {
-  margin-left: 1rem;
+  margin-left: 1rem !important;
 }
 
 .user-select-none {

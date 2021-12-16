@@ -31,7 +31,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // Categories
 app.get("/categories", async (req, res) => {
-  const categories = await Category.find();
+  const categories = await Category.find().lean();
+
+  for (const [index, category] of categories.entries()) {
+    const transactions = await Transaction.find({
+      categoryId: category._id,
+    });
+
+    categories[index].transactions = transactions;
+  }
+
   res.json(categories);
 });
 app.post("/categories", async (req, res) => {

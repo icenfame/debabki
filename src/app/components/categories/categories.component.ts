@@ -100,10 +100,15 @@ export class CategoriesComponent implements OnInit {
       });
   }
 
-  openAddTransactionDialog(): void {
+  openAddTransactionDialog(categoryId: string, income: boolean): void {
     this.dialog
       .open(TransactionDialogComponent, {
-        data: { dialogTitle: 'Додавання запису', dialogAction: 'ДОДАТИ' },
+        data: {
+          dialogTitle: 'Додавання запису',
+          dialogAction: 'ДОДАТИ',
+          categoryId,
+          income,
+        },
       })
       .afterClosed()
       .subscribe((dialog) => {
@@ -112,7 +117,7 @@ export class CategoriesComponent implements OnInit {
           this.http
             .post('/transactions', {
               categoryId: dialog.categoryId,
-              type: dialog.type,
+              income: dialog.income,
               amount: dialog.amount,
               date: dialog.date,
               description: dialog.description,
@@ -121,6 +126,53 @@ export class CategoriesComponent implements OnInit {
               // Add to transactions array
               // this.transactions = [...this.transactions, document];
             });
+        }
+      });
+  }
+
+  openUpdateTransactionDialog(
+    name: string,
+    description: string,
+    id: string,
+    index: number
+  ): void {
+    this.dialog
+      .open(TransactionDialogComponent, {
+        data: {
+          dialogTitle: 'Редагування категорії',
+          dialogAction: 'РЕДАГУВАТИ',
+          id,
+          name,
+          description,
+        },
+      })
+      .afterClosed()
+      .subscribe((dialog) => {
+        // Check if submitted
+        if (dialog) {
+          // If delete
+          if (dialog.deleteId) {
+            if (confirm('Ви дійсно хочете видалити запис?')) {
+              this.http
+                .delete(`/transactions/${dialog.deleteId}`)
+                .subscribe(() => {
+                  // this.categories = this.categories.filter(
+                  // (category: any) => category._id !== dialog.deleteId
+                  // );
+                });
+            }
+          } // If update
+          else {
+            this.http
+              .put(`/transactions/${id}`, {
+                description: dialog.description,
+              })
+              .subscribe(() => {
+                // Update transactions array
+                // this.transactions[index].name = dialog.name;
+                // this.transactions[index].description = dialog.description;
+              });
+          }
         }
       });
   }
