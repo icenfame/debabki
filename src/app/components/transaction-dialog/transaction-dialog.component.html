@@ -13,7 +13,7 @@
       <mat-option [value]="true">Дохід</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="fill" color="accent">
+  <mat-form-field appearance="fill" color="accent" cdkFocusInitial>
     <mat-label>Сума, грн.</mat-label>
     <input matInput [(ngModel)]="data.amount" type="number" min="0">
   </mat-form-field>
@@ -36,6 +36,6 @@
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>СКАСУВАТИ</button>
   <button mat-button [mat-dialog-close]="data"
-    [disabled]="!data.categoryId || data.income !== undefined || !data.amount || !data.date || !data.description"
+    [disabled]="!data.categoryId || data.income === undefined || !data.amount || !data.date || !data.description"
     color="accent">{{data.dialogAction}}</button>
 </div>
