@@ -53,6 +53,40 @@ app.delete("/categories/:id", async (req, res) => {
   res.json(req.params);
 });
 
+// Summary
+app.get("/summary", async (req, res) => {
+  const summary = await Transaction.aggregate([
+    {
+      $group: {
+        _id: null,
+        income: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$type", true],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+        expanse: {
+          $sum: {
+            $cond: [
+              {
+                $eq: ["$type", false],
+              },
+              "$amount",
+              0,
+            ],
+          },
+        },
+      },
+    },
+  ]);
+  res.json(summary[0]);
+});
+
 // Transactions
 app.get("/transactions", async (req, res) => {
   const transactions = await Transaction.find();
