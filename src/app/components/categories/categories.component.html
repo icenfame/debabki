@@ -14,9 +14,12 @@
   </div>
 
   <mat-chip-list>
-    <mat-chip color="warn" selected>Витрати за період: -{{summary.expanse | currency:'UAH':'symbol': '1.2-2'}}
+    <mat-chip color="accent" selected>
+      Доходи за період: {{summary.income | currency:'UAH':'symbol': '1.2-2'}}
     </mat-chip>
-    <mat-chip color="accent" selected>Доходи за період: {{summary.income | currency:'UAH':'symbol': '1.2-2'}}</mat-chip>
+    <mat-chip color="warn" selected>
+      Витрати за період: -{{summary.expanse | currency:'UAH':'symbol': '1.2-2'}}
+    </mat-chip>
   </mat-chip-list>
 </div>
 
@@ -35,21 +38,25 @@
 
     <mat-card-content>
       <mat-chip-list>
-        <mat-chip color="warn" selected>Витрати: -230.85</mat-chip>
         <mat-chip color="accent" selected>Доходи: 1500.00</mat-chip>
+        <mat-chip color="warn" selected>Витрати: -230.85</mat-chip>
       </mat-chip-list>
 
       <p class="mt-1">{{category.description}}</p>
     </mat-card-content>
 
     <mat-card-actions class="mb-0">
-      <button mat-button (click)="openAddTransactionDialog()">
+      <button mat-button color="accent" (click)="openAddTransactionDialog(category._id, true)">
         <mat-icon>add</mat-icon>
-        ДОДАТИ ЗАПИС
+        ДОХІД
+      </button>
+      <button mat-button color="warn" (click)="openAddTransactionDialog(category._id, false)">
+        <mat-icon>remove</mat-icon>
+        ВИТРАТА
       </button>
     </mat-card-actions>
 
-    <mat-card-footer>
+    <mat-card-footer *ngIf="category.transactions.length > 0">
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
@@ -58,33 +65,20 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <mat-list>
-            <mat-list-item>
+            <mat-list-item *ngFor="let transaction of category.transactions">
               <div mat-line>
-                <div class="flex jc-space-between" style="height: 24px;">
-                  Стипендія
-                  <p class="text-accent">1500 грн</p>
+                <div class="flex jc-space-between">
+                  <p class="mr-1">{{transaction.description}}</p>
+                  <p [ngClass]="transaction.income ? 'text-accent' : 'text-warn'">
+                    {{!transaction.income ? '-' : ''}}{{transaction.amount | currency:'UAH':'symbol': '1.2-2'}}
+                  </p>
                 </div>
               </div>
               <div mat-line class="text-muted">
                 <div class="flex jc-space-between ai-center">
-                  14.12.2021
-                  <button mat-icon-button matTooltip="Редагувати запис">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </mat-list-item>
-            <mat-list-item>
-              <div mat-line>
-                <div class="flex jc-space-between" style="height: 24px;">
-                  Булочка
-                  <p class="text-warn">-65.90 грн</p>
-                </div>
-              </div>
-              <div mat-line class="text-muted">
-                <div class="flex jc-space-between ai-center">
-                  11.12.2021
-                  <button mat-icon-button matTooltip="Редагувати запис">
+                  {{transaction.date | date}}
+                  <button mat-icon-button matTooltip="Редагувати запис"
+                    (click)="openUpdateTransactionDialog(transaction.name, transaction.description, transaction._id, i)">
                     <mat-icon>edit</mat-icon>
                   </button>
                 </div>

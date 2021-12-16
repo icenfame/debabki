@@ -40,7 +40,7 @@ export class TransactionsComponent implements OnInit {
           this.http
             .post('/transactions', {
               categoryId: dialog.categoryId,
-              type: dialog.type,
+              income: dialog.income,
               amount: dialog.amount,
               date: dialog.date,
               description: dialog.description,
