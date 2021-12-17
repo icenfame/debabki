@@ -17,7 +17,7 @@ const Category = mongoose.model("Category", categorySchema);
 // Transaction schema
 const transactionSchema = new mongoose.Schema({
   income: Boolean,
-  description: String,
+  name: String,
   amount: Number,
   categoryId: mongoose.SchemaTypes.ObjectId,
   date: Date,
@@ -58,6 +58,7 @@ app.post("/categories", async (req, res) => {
     name: req.body.name,
     description: req.body.description,
   });
+
   res.json(document);
 });
 app.put("/categories/:id", async (req, res) => {
@@ -65,10 +66,15 @@ app.put("/categories/:id", async (req, res) => {
     name: req.body.name,
     description: req.body.description,
   });
+
   res.json(req.body);
 });
 app.delete("/categories/:id", async (req, res) => {
   await Category.findByIdAndDelete(req.params.id);
+  await Transaction.deleteMany({
+    categoryId: req.params.id,
+  });
+
   res.json(req.params);
 });
 
@@ -103,6 +109,7 @@ app.get("/summary", async (req, res) => {
       },
     },
   ]);
+
   res.json(summary[0]);
 });
 
@@ -114,21 +121,23 @@ app.get("/transactions", async (req, res) => {
 app.post("/transactions", async (req, res) => {
   const document = await Transaction.create({
     income: req.body.income,
-    description: req.body.description,
+    name: req.body.name,
     amount: req.body.amount,
     categoryId: req.body.categoryId,
     date: req.body.date,
   });
+
   res.json(document);
 });
 app.put("/transactions/:id", async (req, res) => {
   await Transaction.findByIdAndUpdate(req.params.id, {
     income: req.body.income,
-    description: req.body.description,
+    name: req.body.name,
     amount: req.body.amount,
     categoryId: req.body.categoryId,
     date: req.body.date,
   });
+
   res.json(req.body);
 });
 app.delete("/transactions/:id", async (req, res) => {
