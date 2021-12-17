@@ -2,7 +2,7 @@
 
 <div class="flex jc-center ai-center mt-1 mb-1">
   <div class="flex mr-1">
-    <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
+    <!-- <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
       <mat-label>Оберіть період часу</mat-label>
       <mat-date-range-input [rangePicker]="picker">
         <input matStartDate placeholder="Початок">
@@ -10,6 +10,16 @@
       </mat-date-range-input>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field> -->
+    <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
+      <mat-label>Оберіть період часу</mat-label>
+      <mat-select [value]="'2'">
+        <mat-option value="0">1 день</mat-option>
+        <mat-option value="1">1 тиждень</mat-option>
+        <mat-option value="2">1 місяць</mat-option>
+        <mat-option value="3">1 рік</mat-option>
+        <!-- <mat-option value="4">обрати на календарі</mat-option> -->
+      </mat-select>
     </mat-form-field>
   </div>
 
@@ -38,8 +48,11 @@
 
     <mat-card-content>
       <mat-chip-list>
-        <mat-chip color="accent" selected>Доходи: 1500.00</mat-chip>
-        <mat-chip color="warn" selected>Витрати: -230.85</mat-chip>
+        <mat-chip color="accent" selected *ngIf="category.income > 0">Доходи: {{category.income |
+          currency:'UAH':'symbol':
+          '1.2-2'}}</mat-chip>
+        <mat-chip color="warn" selected *ngIf="category.expanse > 0">Витрати: -{{category.expanse |
+          currency:'UAH':'symbol': '1.2-2'}}</mat-chip>
       </mat-chip-list>
 
       <p class="mt-1">{{category.description}}</p>
