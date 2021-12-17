@@ -2,33 +2,34 @@
 <mat-dialog-content class="dialog-content">
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Назва категорії</mat-label>
-    <mat-select [(ngModel)]="data.categoryId">
+    <mat-select [(ngModel)]="data.category._id">
       <mat-option *ngFor="let category of data.categories" [value]="category._id">{{category.name}}</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Тип транзакції</mat-label>
-    <mat-select [(ngModel)]="data.income">
+    <mat-select [(ngModel)]="data.transaction.income">
       <mat-option [value]="false">Витрата</mat-option>
       <mat-option [value]="true">Дохід</mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field appearance="fill" color="accent" cdkFocusInitial>
+  <mat-form-field appearance="fill" color="accent">
     <mat-label>Сума, грн.</mat-label>
-    <input matInput [(ngModel)]="data.amount" type="number" min="0">
+    <input matInput [(ngModel)]="data.transaction.amount" type="number" min="0" cdkFocusInitial>
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Оберіть дату</mat-label>
-    <input matInput [matDatepicker]="picker" [(ngModel)]="data.date">
+    <input matInput [matDatepicker]="picker" [(ngModel)]="data.transaction.date">
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
-    <mat-label>Опис транзакції</mat-label>
-    <textarea matInput [(ngModel)]="data.description" rows="5"></textarea>
+    <mat-label>Назва транзакції</mat-label>
+    <textarea matInput [(ngModel)]="data.transaction.name" rows="5"></textarea>
   </mat-form-field>
 
-  <button mat-button [mat-dialog-close]="{deleteId: data.id}" color="warn" *ngIf="data.dialogAction === 'РЕДАГУВАТИ'">
+  <button mat-button [mat-dialog-close]="{deleteId: data.transaction._id}" color="warn"
+    *ngIf="data.dialogAction === 'РЕДАГУВАТИ'">
     <mat-icon>delete</mat-icon>
     ВИДАЛИТИ
   </button>
@@ -36,6 +37,6 @@
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>СКАСУВАТИ</button>
   <button mat-button [mat-dialog-close]="data"
-    [disabled]="!data.categoryId || data.income === undefined || !data.amount || !data.date || !data.description"
+    [disabled]="!data.category._id || data.transaction.income === undefined || !data.transaction.amount || !data.transaction.date || !data.transaction.name"
     color="accent">{{data.dialogAction}}</button>
 </div>

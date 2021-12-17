@@ -28,7 +28,6 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AppComponent } from './app.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { CategoryDialogComponent } from './components/category-dialog/category-dialog.component';
-import { TransactionsComponent } from './components/transactions/transactions.component';
 import { TransactionDialogComponent } from './components/transaction-dialog/transaction-dialog.component';
 
 @NgModule({
@@ -36,7 +35,6 @@ import { TransactionDialogComponent } from './components/transaction-dialog/tran
     AppComponent,
     CategoriesComponent,
     CategoryDialogComponent,
-    TransactionsComponent,
     TransactionDialogComponent,
   ],
   imports: [

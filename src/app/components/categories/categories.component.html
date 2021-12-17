@@ -34,12 +34,12 @@
 </div>
 
 <div class="categories">
-  <mat-card *ngFor="let category of categories; let i = index" class="category-card">
+  <mat-card *ngFor="let category of categories; let categoryIndex = index" class="category-card">
     <mat-card-title-group>
       <mat-card-title class="flex ai-center">
         {{category.name}}
         <button mat-icon-button matTooltip="Редагувати категорію"
-          (click)="openUpdateCategoryDialog(category.name, category.description, category._id, i)">
+          (click)="openUpdateCategoryDialog(category, categoryIndex)">
           <mat-icon>edit</mat-icon>
         </button>
       </mat-card-title>
@@ -48,22 +48,23 @@
 
     <mat-card-content>
       <mat-chip-list>
-        <mat-chip color="accent" selected *ngIf="category.income > 0">Доходи: {{category.income |
-          currency:'UAH':'symbol':
-          '1.2-2'}}</mat-chip>
-        <mat-chip color="warn" selected *ngIf="category.expanse > 0">Витрати: -{{category.expanse |
-          currency:'UAH':'symbol': '1.2-2'}}</mat-chip>
+        <mat-chip color="accent" selected *ngIf="category.income > 0">
+          Доходи: {{category.income | currency:'UAH':'symbol':'1.2-2'}}
+        </mat-chip>
+        <mat-chip color="warn" selected *ngIf="category.expanse > 0">
+          Витрати: -{{category.expanse | currency:'UAH':'symbol': '1.2-2'}}
+        </mat-chip>
       </mat-chip-list>
 
       <p class="mt-1">{{category.description}}</p>
     </mat-card-content>
 
     <mat-card-actions class="mb-0">
-      <button mat-button color="accent" (click)="openAddTransactionDialog(category._id, true)">
+      <button mat-button color="accent" (click)="openAddTransactionDialog(category, categoryIndex, true)">
         <mat-icon>add</mat-icon>
         ДОХІД
       </button>
-      <button mat-button color="warn" (click)="openAddTransactionDialog(category._id, false)">
+      <button mat-button color="warn" (click)="openAddTransactionDialog(category, categoryIndex, false)">
         <mat-icon>remove</mat-icon>
         ВИТРАТА
       </button>
@@ -78,10 +79,10 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <mat-list>
-            <mat-list-item *ngFor="let transaction of category.transactions">
+            <mat-list-item *ngFor="let transaction of category.transactions; let transactionIndex = index">
               <div mat-line>
                 <div class="flex jc-space-between">
-                  <p class="mr-1">{{transaction.description}}</p>
+                  <p class="mr-1">{{transaction.name}}</p>
                   <p [ngClass]="transaction.income ? 'text-accent' : 'text-warn'">
                     {{!transaction.income ? '-' : ''}}{{transaction.amount | currency:'UAH':'symbol': '1.2-2'}}
                   </p>
@@ -91,7 +92,7 @@
                 <div class="flex jc-space-between ai-center">
                   {{transaction.date | date}}
                   <button mat-icon-button matTooltip="Редагувати запис"
-                    (click)="openUpdateTransactionDialog(transaction.name, transaction.description, transaction._id, i)">
+                    (click)="openUpdateTransactionDialog(category, categoryIndex, transaction, transactionIndex)">
                     <mat-icon>edit</mat-icon>
                   </button>
                 </div>
