@@ -16,7 +16,7 @@ const Category = mongoose.model("Category", categorySchema);
 
 // Transaction schema
 const transactionSchema = new mongoose.Schema({
-  type: Boolean,
+  income: Boolean,
   description: String,
   amount: Number,
   categoryId: mongoose.SchemaTypes.ObjectId,
@@ -36,9 +36,19 @@ app.get("/categories", async (req, res) => {
   for (const [index, category] of categories.entries()) {
     const transactions = await Transaction.find({
       categoryId: category._id,
-    });
+    }).lean();
 
     categories[index].transactions = transactions;
+    categories[index].income = transactions.reduce(
+      (prevValue, currValue) =>
+        currValue.income ? prevValue + currValue.amount : prevValue,
+      0
+    );
+    categories[index].expanse = transactions.reduce(
+      (prevValue, currValue) =>
+        !currValue.income ? prevValue + currValue.amount : prevValue,
+      0
+    );
   }
 
   res.json(categories);
@@ -72,7 +82,7 @@ app.get("/summary", async (req, res) => {
           $sum: {
             $cond: [
               {
-                $eq: ["$type", true],
+                $eq: ["$income", true],
               },
               "$amount",
               0,
@@ -83,7 +93,7 @@ app.get("/summary", async (req, res) => {
           $sum: {
             $cond: [
               {
-                $eq: ["$type", false],
+                $eq: ["$income", false],
               },
               "$amount",
               0,
@@ -103,7 +113,7 @@ app.get("/transactions", async (req, res) => {
 });
 app.post("/transactions", async (req, res) => {
   const document = await Transaction.create({
-    type: req.body.type,
+    income: req.body.income,
     description: req.body.description,
     amount: req.body.amount,
     categoryId: req.body.categoryId,
@@ -113,7 +123,7 @@ app.post("/transactions", async (req, res) => {
 });
 app.put("/transactions/:id", async (req, res) => {
   await Transaction.findByIdAndUpdate(req.params.id, {
-    type: req.body.type,
+    income: req.body.income,
     description: req.body.description,
     amount: req.body.amount,
     categoryId: req.body.categoryId,
