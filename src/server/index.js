@@ -16,7 +16,6 @@ const Category = mongoose.model("Category", categorySchema);
 
 // Transaction schema
 const transactionSchema = new mongoose.Schema({
-  income: Boolean,
   name: String,
   amount: Number,
   categoryId: mongoose.SchemaTypes.ObjectId,
@@ -41,12 +40,12 @@ app.get("/categories", async (req, res) => {
     categories[index].transactions = transactions;
     categories[index].income = transactions.reduce(
       (prevValue, currValue) =>
-        currValue.income ? prevValue + currValue.amount : prevValue,
+        currValue.amount > 0 ? prevValue + currValue.amount : prevValue,
       0
     );
-    categories[index].expanse = transactions.reduce(
+    categories[index].outcome = transactions.reduce(
       (prevValue, currValue) =>
-        !currValue.income ? prevValue + currValue.amount : prevValue,
+        currValue.amount < 0 ? prevValue + currValue.amount : prevValue,
       0
     );
   }
@@ -88,18 +87,18 @@ app.get("/summary", async (req, res) => {
           $sum: {
             $cond: [
               {
-                $eq: ["$income", true],
+                $gt: ["$amount", 0],
               },
               "$amount",
               0,
             ],
           },
         },
-        expanse: {
+        outcome: {
           $sum: {
             $cond: [
               {
-                $eq: ["$income", false],
+                $lt: ["$amount", 0],
               },
               "$amount",
               0,
@@ -120,7 +119,6 @@ app.get("/transactions", async (req, res) => {
 });
 app.post("/transactions", async (req, res) => {
   const document = await Transaction.create({
-    income: req.body.income,
     name: req.body.name,
     amount: req.body.amount,
     categoryId: req.body.categoryId,
@@ -131,7 +129,6 @@ app.post("/transactions", async (req, res) => {
 });
 app.put("/transactions/:id", async (req, res) => {
   await Transaction.findByIdAndUpdate(req.params.id, {
-    income: req.body.income,
     name: req.body.name,
     amount: req.body.amount,
     categoryId: req.body.categoryId,

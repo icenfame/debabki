@@ -50,7 +50,7 @@ export class CategoriesComponent implements OnInit {
               // Add to categories array
               this.categories = [
                 ...this.categories,
-                { ...document, transactions: [], income: 0, expanse: 0 },
+                { ...document, transactions: [], income: 0, outcome: 0 },
               ];
             });
         }
@@ -73,17 +73,11 @@ export class CategoriesComponent implements OnInit {
         if (dialog) {
           // If delete
           if (dialog.deleteId) {
-            // if (
-            //   confirm(
-            //     'Ви дійсно хочете видалити категорію та всі транзакції у ній?'
-            //   )
-            // ) {
             this.http.delete(`/categories/${dialog.deleteId}`).subscribe(() => {
               this.categories = this.categories.filter(
                 (category: any) => category._id !== dialog.deleteId
               );
             });
-            // }
           } // If update
           else {
             this.http
@@ -106,7 +100,7 @@ export class CategoriesComponent implements OnInit {
   openAddTransactionDialog(
     category: any,
     categoryIndex: number,
-    income: boolean
+    type: boolean
   ): void {
     this.dialog
       .open(TransactionDialogComponent, {
@@ -114,18 +108,20 @@ export class CategoriesComponent implements OnInit {
           dialogTitle: 'Додавання запису',
           dialogAction: 'ДОДАТИ',
           category,
-          transaction: { income },
+          transaction: { type },
         },
       })
       .afterClosed()
       .subscribe((dialog) => {
         // Check if submitted
         if (dialog) {
+          const amount =
+            dialog.transaction.amount * (dialog.transaction.type > 0 ? 1 : -1);
+
           this.http
             .post('/transactions', {
               categoryId: dialog.category._id,
-              income: dialog.transaction.income,
-              amount: dialog.transaction.amount,
+              amount: amount,
               date: dialog.transaction.date,
               name: dialog.transaction.name,
             })
@@ -137,19 +133,17 @@ export class CategoriesComponent implements OnInit {
               ];
 
               // Update category summary
-              if (dialog.transaction.income) {
-                this.categories[categoryIndex].income +=
-                  dialog.transaction.amount;
+              if (amount > 0) {
+                this.categories[categoryIndex].income += amount;
               } else {
-                this.categories[categoryIndex].expanse +=
-                  dialog.transaction.amount;
+                this.categories[categoryIndex].outcome += amount;
               }
 
               // Update overall summary
-              if (dialog.transaction.income) {
-                this.summary.income += dialog.transaction.amount;
+              if (amount > 0) {
+                this.summary.income += amount;
               } else {
-                this.summary.expanse += dialog.transaction.amount;
+                this.summary.outcome += amount;
               }
             });
         }
@@ -169,7 +163,11 @@ export class CategoriesComponent implements OnInit {
           dialogTitle: 'Редагування категорії',
           dialogAction: 'РЕДАГУВАТИ',
           category,
-          transaction,
+          transaction: {
+            ...transaction,
+            amount: Math.abs(transaction.amount).toFixed(2),
+            type: transaction.amount > 0,
+          },
           prevAmount: transaction.amount,
         },
       })
@@ -179,7 +177,9 @@ export class CategoriesComponent implements OnInit {
         if (dialog) {
           // If delete
           if (dialog.deleteId) {
-            // if (confirm('Ви дійсно хочете видалити запис?')) {
+            const amount =
+              transaction.amount * (transaction.amount > 0 ? 1 : -1);
+
             this.http
               .delete(`/transactions/${dialog.deleteId}`)
               .subscribe(() => {
@@ -191,55 +191,58 @@ export class CategoriesComponent implements OnInit {
                 );
 
                 // Update category summary
-                if (transaction.income) {
-                  this.categories[categoryIndex].income -= transaction.amount;
+                if (amount > 0) {
+                  this.categories[categoryIndex].income -= amount;
                 } else {
-                  this.categories[categoryIndex].expanse -= transaction.amount;
+                  this.categories[categoryIndex].outcome -= amount;
                 }
 
                 // Update overall summary
-                if (transaction.income) {
-                  this.summary.income -= transaction.amount;
+                if (amount > 0) {
+                  this.summary.income -= amount;
                 } else {
-                  this.summary.expanse -= transaction.amount;
+                  this.summary.outcome -= amount;
                 }
               });
-            // }
           } // If update
           else {
+            const amount =
+              dialog.transaction.amount *
+              (dialog.transaction.type > 0 ? 1 : -1);
+
             this.http
               .put(`/transactions/${transaction._id}`, {
                 categoryId: dialog.category._id,
-                income: dialog.transaction.income,
-                amount: dialog.transaction.amount,
+                amount: amount,
                 date: dialog.transaction.date,
                 name: dialog.transaction.name,
               })
               .subscribe(() => {
                 // Update transactions array
                 this.categories[categoryIndex].transactions[transactionIndex] =
-                  dialog.transaction;
+                  { ...dialog.transaction, amount };
                 this.categories[categoryIndex].transactions[
                   transactionIndex
                 ].categoryId = dialog.category._id;
 
                 // TODO
+                // updates
 
                 // Update category summary
-                // if (dialog.transaction.income) {
+                // if (amount) {
                 //   this.categories[categoryIndex].income +=
                 //     dialog.transaction.amount - dialog.prevAmount;
                 // } else {
-                //   this.categories[categoryIndex].expanse +=
+                //   this.categories[categoryIndex].outcome +=
                 //     dialog.transaction.amount - dialog.prevAmount;
                 // }
 
-                // Update overall summary
-                // if (dialog.transaction.income) {
+                // // Update overall summary
+                // if (amount) {
                 //   this.summary.income +=
                 //     dialog.transaction.amount - dialog.prevAmount;
                 // } else {
-                //   this.summary.expanse +=
+                //   this.summary.outcome +=
                 //     dialog.transaction.amount - dialog.prevAmount;
                 // }
               });

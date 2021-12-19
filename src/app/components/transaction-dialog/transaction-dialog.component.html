@@ -8,14 +8,14 @@
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Тип транзакції</mat-label>
-    <mat-select [(ngModel)]="data.transaction.income">
-      <mat-option [value]="false">Витрата</mat-option>
+    <mat-select [(ngModel)]="data.transaction.type">
       <mat-option [value]="true">Дохід</mat-option>
+      <mat-option [value]="false">Витрата</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Сума, грн.</mat-label>
-    <input matInput [(ngModel)]="data.transaction.amount" type="number" min="0" cdkFocusInitial>
+    <input matInput [(ngModel)]="data.transaction.amount" type="number" min="0.01" cdkFocusInitial>
   </mat-form-field>
   <mat-form-field appearance="fill" color="accent">
     <mat-label>Оберіть дату</mat-label>
@@ -37,6 +37,6 @@
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>СКАСУВАТИ</button>
   <button mat-button [mat-dialog-close]="data"
-    [disabled]="!data.category._id || data.transaction.income === undefined || !data.transaction.amount || !data.transaction.date || !data.transaction.name"
+    [disabled]="!data.category._id || data.transaction.type === undefined || !data.transaction.amount || !data.transaction.date || !data.transaction.name"
     color="accent">{{data.dialogAction}}</button>
 </div>
