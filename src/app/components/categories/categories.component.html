@@ -28,7 +28,7 @@
       Доходи за період: {{summary.income | currency:'UAH':'symbol': '1.2-2'}}
     </mat-chip>
     <mat-chip color="warn" selected>
-      Витрати за період: -{{summary.expanse | currency:'UAH':'symbol': '1.2-2'}}
+      Витрати за період: {{summary.outcome | currency:'UAH':'symbol': '1.2-2'}}
     </mat-chip>
   </mat-chip-list>
 </div>
@@ -51,8 +51,8 @@
         <mat-chip color="accent" selected *ngIf="category.income > 0">
           Доходи: {{category.income | currency:'UAH':'symbol':'1.2-2'}}
         </mat-chip>
-        <mat-chip color="warn" selected *ngIf="category.expanse > 0">
-          Витрати: -{{category.expanse | currency:'UAH':'symbol': '1.2-2'}}
+        <mat-chip color="warn" selected *ngIf="category.outcome < 0">
+          Витрати: {{category.outcome | currency:'UAH':'symbol': '1.2-2'}}
         </mat-chip>
       </mat-chip-list>
 
@@ -83,8 +83,8 @@
               <div mat-line>
                 <div class="flex jc-space-between">
                   <p class="mr-1">{{transaction.name}}</p>
-                  <p [ngClass]="transaction.income ? 'text-accent' : 'text-warn'">
-                    {{!transaction.income ? '-' : ''}}{{transaction.amount | currency:'UAH':'symbol': '1.2-2'}}
+                  <p [ngClass]="transaction.amount > 0 ? 'text-accent' : 'text-warn'">
+                    {{transaction.amount | currency:'UAH':'symbol': '1.2-2'}}
                   </p>
                 </div>
               </div>
