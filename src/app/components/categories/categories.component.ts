@@ -132,17 +132,12 @@ export class CategoriesComponent implements OnInit {
                 document,
               ];
 
-              // Update category summary
+              // Update summary
               if (amount > 0) {
                 this.categories[categoryIndex].income += amount;
-              } else {
-                this.categories[categoryIndex].outcome += amount;
-              }
-
-              // Update overall summary
-              if (amount > 0) {
                 this.summary.income += amount;
               } else {
+                this.categories[categoryIndex].outcome += amount;
                 this.summary.outcome += amount;
               }
             });
@@ -190,17 +185,12 @@ export class CategoriesComponent implements OnInit {
                   (category: any) => category._id !== dialog.deleteId
                 );
 
-                // Update category summary
+                // Update summary
                 if (amount > 0) {
                   this.categories[categoryIndex].income -= amount;
-                } else {
-                  this.categories[categoryIndex].outcome -= amount;
-                }
-
-                // Update overall summary
-                if (amount > 0) {
                   this.summary.income -= amount;
                 } else {
+                  this.categories[categoryIndex].outcome -= amount;
                   this.summary.outcome -= amount;
                 }
               });
@@ -225,26 +215,23 @@ export class CategoriesComponent implements OnInit {
                   transactionIndex
                 ].categoryId = dialog.category._id;
 
-                // TODO
-                // updates
+                // Reset summary
+                if (dialog.prevAmount > 0) {
+                  this.categories[categoryIndex].income -= dialog.prevAmount;
+                  this.summary.income -= dialog.prevAmount;
+                } else {
+                  this.categories[categoryIndex].outcome -= dialog.prevAmount;
+                  this.summary.outcome -= dialog.prevAmount;
+                }
 
-                // Update category summary
-                // if (amount) {
-                //   this.categories[categoryIndex].income +=
-                //     dialog.transaction.amount - dialog.prevAmount;
-                // } else {
-                //   this.categories[categoryIndex].outcome +=
-                //     dialog.transaction.amount - dialog.prevAmount;
-                // }
-
-                // // Update overall summary
-                // if (amount) {
-                //   this.summary.income +=
-                //     dialog.transaction.amount - dialog.prevAmount;
-                // } else {
-                //   this.summary.outcome +=
-                //     dialog.transaction.amount - dialog.prevAmount;
-                // }
+                // Update summary
+                if (amount > 0) {
+                  this.categories[categoryIndex].income += amount;
+                  this.summary.income += amount;
+                } else {
+                  this.categories[categoryIndex].outcome += amount;
+                  this.summary.outcome += amount;
+                }
               });
           }
         }
