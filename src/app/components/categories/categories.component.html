@@ -38,8 +38,7 @@
     <mat-card-title-group>
       <mat-card-title class="flex ai-center">
         {{category.name}}
-        <button mat-icon-button matTooltip="Редагувати категорію"
-          (click)="openUpdateCategoryDialog(category, categoryIndex)">
+        <button mat-icon-button matTooltip="Редагувати категорію" (click)="openUpdateCategoryDialog(category)">
           <mat-icon>edit</mat-icon>
         </button>
       </mat-card-title>
@@ -60,11 +59,11 @@
     </mat-card-content>
 
     <mat-card-actions class="mb-0">
-      <button mat-button color="accent" (click)="openAddTransactionDialog(category, categoryIndex, true)">
+      <button mat-button color="accent" (click)="openAddTransactionDialog(category, true)">
         <mat-icon>add</mat-icon>
         ДОХІД
       </button>
-      <button mat-button color="warn" (click)="openAddTransactionDialog(category, categoryIndex, false)">
+      <button mat-button color="warn" (click)="openAddTransactionDialog(category, false)">
         <mat-icon>remove</mat-icon>
         ВИТРАТА
       </button>
@@ -72,7 +71,8 @@
 
     <mat-card-footer *ngIf="category.transactions.length > 0">
       <mat-accordion>
-        <mat-expansion-panel>
+        <mat-expansion-panel (opened)="expanded[category._id] = true" (closed)="expanded[category._id] = false"
+          [expanded]="expanded[category._id]">
           <mat-expansion-panel-header>
             <mat-panel-description>
               Всі записи
@@ -92,7 +92,7 @@
                 <div class="flex jc-space-between ai-center">
                   {{transaction.date | date}}
                   <button mat-icon-button matTooltip="Редагувати запис"
-                    (click)="openUpdateTransactionDialog(category, categoryIndex, transaction, transactionIndex)">
+                    (click)="openUpdateTransactionDialog(category, transaction)">
                     <mat-icon>edit</mat-icon>
                   </button>
                 </div>

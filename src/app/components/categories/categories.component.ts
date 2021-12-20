@@ -13,11 +13,12 @@ import { TransactionDialogComponent } from '../transaction-dialog/transaction-di
 export class CategoriesComponent implements OnInit {
   categories: any = [];
   summary: any = [];
+  expanded: any = [];
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
-  // Init
-  ngOnInit(): void {
+  // Get data
+  getData(): void {
     this.http.get('/categories').subscribe((res) => {
       this.categories = res;
     });
@@ -25,6 +26,11 @@ export class CategoriesComponent implements OnInit {
     this.http.get('/summary').subscribe((res) => {
       this.summary = res;
     });
+  }
+
+  // Init
+  ngOnInit(): void {
+    this.getData();
   }
 
   // Add category
@@ -46,19 +52,13 @@ export class CategoriesComponent implements OnInit {
               name: dialog.category.name,
               description: dialog.category.description,
             })
-            .subscribe((document) => {
-              // Add to categories array
-              this.categories = [
-                ...this.categories,
-                { ...document, transactions: [], income: 0, outcome: 0 },
-              ];
-            });
+            .subscribe(() => this.getData());
         }
       });
   }
 
   // Update category
-  openUpdateCategoryDialog(category: any, categoryIndex: number): void {
+  openUpdateCategoryDialog(category: any): void {
     this.dialog
       .open(CategoryDialogComponent, {
         data: {
@@ -73,11 +73,9 @@ export class CategoriesComponent implements OnInit {
         if (dialog) {
           // If delete
           if (dialog.deleteId) {
-            this.http.delete(`/categories/${dialog.deleteId}`).subscribe(() => {
-              this.categories = this.categories.filter(
-                (category: any) => category._id !== dialog.deleteId
-              );
-            });
+            this.http
+              .delete(`/categories/${dialog.deleteId}`)
+              .subscribe(() => this.getData());
           } // If update
           else {
             this.http
@@ -85,23 +83,14 @@ export class CategoriesComponent implements OnInit {
                 name: dialog.category.name,
                 description: dialog.category.description,
               })
-              .subscribe(() => {
-                // Update categories array
-                this.categories[categoryIndex].name = dialog.category.name;
-                this.categories[categoryIndex].description =
-                  dialog.category.description;
-              });
+              .subscribe(() => this.getData());
           }
         }
       });
   }
 
   // Add transaction
-  openAddTransactionDialog(
-    category: any,
-    categoryIndex: number,
-    type: boolean
-  ): void {
+  openAddTransactionDialog(category: any, type: boolean): void {
     this.dialog
       .open(TransactionDialogComponent, {
         data: {
@@ -125,33 +114,13 @@ export class CategoriesComponent implements OnInit {
               date: dialog.transaction.date,
               name: dialog.transaction.name,
             })
-            .subscribe((document) => {
-              // Add to transactions array
-              this.categories[categoryIndex].transactions = [
-                ...this.categories[categoryIndex].transactions,
-                document,
-              ];
-
-              // Update summary
-              if (amount > 0) {
-                this.categories[categoryIndex].income += amount;
-                this.summary.income += amount;
-              } else {
-                this.categories[categoryIndex].outcome += amount;
-                this.summary.outcome += amount;
-              }
-            });
+            .subscribe(() => this.getData());
         }
       });
   }
 
   // Update transaction
-  openUpdateTransactionDialog(
-    category: any,
-    categoryIndex: number,
-    transaction: any,
-    transactionIndex: number
-  ): void {
+  openUpdateTransactionDialog(category: any, transaction: any): void {
     this.dialog
       .open(TransactionDialogComponent, {
         data: {
@@ -172,28 +141,9 @@ export class CategoriesComponent implements OnInit {
         if (dialog) {
           // If delete
           if (dialog.deleteId) {
-            const amount =
-              transaction.amount * (transaction.amount > 0 ? 1 : -1);
-
             this.http
               .delete(`/transactions/${dialog.deleteId}`)
-              .subscribe(() => {
-                // Update transactions array
-                this.categories[categoryIndex].transactions = this.categories[
-                  categoryIndex
-                ].transactions.filter(
-                  (category: any) => category._id !== dialog.deleteId
-                );
-
-                // Update summary
-                if (amount > 0) {
-                  this.categories[categoryIndex].income -= amount;
-                  this.summary.income -= amount;
-                } else {
-                  this.categories[categoryIndex].outcome -= amount;
-                  this.summary.outcome -= amount;
-                }
-              });
+              .subscribe(() => this.getData());
           } // If update
           else {
             const amount =
@@ -207,32 +157,7 @@ export class CategoriesComponent implements OnInit {
                 date: dialog.transaction.date,
                 name: dialog.transaction.name,
               })
-              .subscribe(() => {
-                // Update transactions array
-                this.categories[categoryIndex].transactions[transactionIndex] =
-                  { ...dialog.transaction, amount };
-                this.categories[categoryIndex].transactions[
-                  transactionIndex
-                ].categoryId = dialog.category._id;
-
-                // Reset summary
-                if (dialog.prevAmount > 0) {
-                  this.categories[categoryIndex].income -= dialog.prevAmount;
-                  this.summary.income -= dialog.prevAmount;
-                } else {
-                  this.categories[categoryIndex].outcome -= dialog.prevAmount;
-                  this.summary.outcome -= dialog.prevAmount;
-                }
-
-                // Update summary
-                if (amount > 0) {
-                  this.categories[categoryIndex].income += amount;
-                  this.summary.income += amount;
-                } else {
-                  this.categories[categoryIndex].outcome += amount;
-                  this.summary.outcome += amount;
-                }
-              });
+              .subscribe(() => this.getData());
           }
         }
       });
