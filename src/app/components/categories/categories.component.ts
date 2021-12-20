@@ -14,22 +14,28 @@ export class CategoriesComponent implements OnInit {
   categories: any = [];
   summary: any = [];
   expanded: any = [];
+  dateRange: string = '1 month';
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
+  // Init
+  ngOnInit(): void {
+    this.getData();
+  }
+
   // Get data
   getData(): void {
-    this.http.get('/categories').subscribe((res) => {
+    this.http.get(`/categories/${this.dateRange}`).subscribe((res) => {
       this.categories = res;
     });
 
-    this.http.get('/summary').subscribe((res) => {
+    this.http.get(`/summary/${this.dateRange}`).subscribe((res) => {
       this.summary = res;
     });
   }
 
-  // Init
-  ngOnInit(): void {
+  // Set date range
+  setDateRange(): void {
     this.getData();
   }
 
@@ -41,6 +47,7 @@ export class CategoriesComponent implements OnInit {
           dialogTitle: 'Додавання категорії',
           dialogAction: 'ДОДАТИ',
           category: {},
+          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -64,7 +71,8 @@ export class CategoriesComponent implements OnInit {
         data: {
           dialogTitle: 'Редагування категорії',
           dialogAction: 'РЕДАГУВАТИ',
-          category,
+          category: { ...category }, // Prevent copy by reference
+          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -98,6 +106,7 @@ export class CategoriesComponent implements OnInit {
           dialogAction: 'ДОДАТИ',
           category,
           transaction: { type },
+          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -133,6 +142,7 @@ export class CategoriesComponent implements OnInit {
             type: transaction.amount > 0,
           },
           prevAmount: transaction.amount,
+          dateRange: this.dateRange,
         },
       })
       .afterClosed()
