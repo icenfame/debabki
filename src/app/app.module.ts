@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { NgChartsModule } from 'ng2-charts';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,12 +24,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatRippleModule } from '@angular/material/core';
-import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppComponent } from './app.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { CategoryDialogComponent } from './components/category-dialog/category-dialog.component';
 import { TransactionDialogComponent } from './components/transaction-dialog/transaction-dialog.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { TransactionDialogComponent } from './components/transaction-dialog/tran
     CategoriesComponent,
     CategoryDialogComponent,
     TransactionDialogComponent,
+    StatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +45,7 @@ import { TransactionDialogComponent } from './components/transaction-dialog/tran
     AppRoutingModule,
     BrowserAnimationsModule,
     FormsModule,
+    NgChartsModule,
 
     MatToolbarModule,
     MatTabsModule,

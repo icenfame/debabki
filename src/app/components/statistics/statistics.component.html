@@ -1,0 +1,38 @@
+<div class="flex jc-center ai-center mt-1 mb-1">
+  <div class="flex mr-1">
+    <!-- <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
+      <mat-label>Оберіть період часу</mat-label>
+      <mat-date-range-input [rangePicker]="picker">
+        <input matStartDate placeholder="Початок">
+        <input matEndDate placeholder="Кінець">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field> -->
+    <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
+      <mat-label>Оберіть період часу</mat-label>
+      <mat-select [(ngModel)]="dateRange" (selectionChange)="setDateRange()">
+        <mat-option value="1 day">1 день</mat-option>
+        <mat-option value="1 week">1 тиждень</mat-option>
+        <mat-option value="1 month">1 місяць</mat-option>
+        <mat-option value="1 year">1 рік</mat-option>
+        <!-- <mat-option value="4">обрати на календарі</mat-option> -->
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-chip-list>
+    <mat-chip color="accent" selected>
+      Доходи за період: {{summary.income | currency:'UAH':'symbol': '1.2-2'}}
+    </mat-chip>
+    <mat-chip color="warn" selected>
+      Витрати за період: {{summary.outcome | currency:'UAH':'symbol': '1.2-2'}}
+    </mat-chip>
+  </mat-chip-list>
+</div>
+
+<div class="flex jc-center ai-center" *ngIf="chartData.datasets[0].data.length > 0">
+  <div style="width: 400px; height: 400px;">
+    <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'pie'"></canvas>
+  </div>
+</div>
