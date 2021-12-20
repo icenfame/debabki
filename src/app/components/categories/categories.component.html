@@ -13,11 +13,11 @@
     </mat-form-field> -->
     <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
       <mat-label>Оберіть період часу</mat-label>
-      <mat-select [value]="'2'">
-        <mat-option value="0">1 день</mat-option>
-        <mat-option value="1">1 тиждень</mat-option>
-        <mat-option value="2">1 місяць</mat-option>
-        <mat-option value="3">1 рік</mat-option>
+      <mat-select [(ngModel)]="dateRange" (selectionChange)="setDateRange()">
+        <mat-option value="1 day">1 день</mat-option>
+        <mat-option value="1 week">1 тиждень</mat-option>
+        <mat-option value="1 month">1 місяць</mat-option>
+        <mat-option value="1 year">1 рік</mat-option>
         <!-- <mat-option value="4">обрати на календарі</mat-option> -->
       </mat-select>
     </mat-form-field>

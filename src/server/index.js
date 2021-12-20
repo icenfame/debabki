@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 // Data base connection
 mongoose.connect("mongodb://localhost/debabki").then(() => {
@@ -29,13 +30,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Categories
-app.get("/categories", async (req, res) => {
+app.get("/categories/:dateRange", async (req, res) => {
   const categories = await Category.find().lean();
 
   for (const [index, category] of categories.entries()) {
     const transactions = await Transaction.find({
       categoryId: category._id,
-    }).lean();
+      date: {
+        $gte: moment()
+          .subtract(...req.params.dateRange.split(" "))
+          .toDate(),
+      },
+    })
+      .sort({ date: -1 })
+      .lean();
 
     categories[index].transactions = transactions;
     categories[index].income = transactions.reduce(
@@ -78,7 +86,7 @@ app.delete("/categories/:id", async (req, res) => {
 });
 
 // Summary
-app.get("/summary", async (req, res) => {
+app.get("/summary/:dateRange", async (req, res) => {
   const summary = await Transaction.aggregate([
     {
       $group: {
@@ -87,7 +95,19 @@ app.get("/summary", async (req, res) => {
           $sum: {
             $cond: [
               {
-                $gt: ["$amount", 0],
+                $and: [
+                  {
+                    $gt: ["$amount", 0],
+                  },
+                  {
+                    $gte: [
+                      "$date",
+                      moment()
+                        .subtract(...req.params.dateRange.split(" "))
+                        .toDate(),
+                    ],
+                  },
+                ],
               },
               "$amount",
               0,
@@ -98,7 +118,19 @@ app.get("/summary", async (req, res) => {
           $sum: {
             $cond: [
               {
-                $lt: ["$amount", 0],
+                $and: [
+                  {
+                    $lt: ["$amount", 0],
+                  },
+                  {
+                    $gte: [
+                      "$date",
+                      moment()
+                        .subtract(...req.params.dateRange.split(" "))
+                        .toDate(),
+                    ],
+                  },
+                ],
               },
               "$amount",
               0,
