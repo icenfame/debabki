@@ -67,8 +67,6 @@ export class StatisticsComponent implements OnInit {
     },
     show: false,
   };
-  chartOptions: ChartOptions = {
-    color: '#fff',
 
   // Categories outcome chart
   categoriesOutcomeChart: ChartObject = {
@@ -93,7 +91,60 @@ export class StatisticsComponent implements OnInit {
     },
     show: false,
   };
-  };
+
+  // Income/outcome chart
+  // incomeOutcomeChart: ChartObject = {
+  //   data: {
+  //     labels: [
+  //       '15.12.2021',
+  //       '16.12.2021',
+  //       '17.12.2021',
+  //       '18.12.2021',
+  //       '19.12.2021',
+  //       '20.12.2021',
+  //     ],
+  //     datasets: [
+  //       {
+  //         label: 'Доходи',
+  //         data: [100, 200, 300, 400, 50, 15],
+  //         // backgroundColor: ['rgb(105, 240, 174)', 'rgb(244, 67, 54)'],
+  //         // hoverBackgroundColor: ['rgb(105, 240, 174)', 'rgb(244, 67, 54)'],
+  //         // hoverBorderColor: '#000',
+  //         tension: 0.3,
+  //         // fill: false,
+  //       },
+  //       // {
+  //       //   data: [],
+  //       //   backgroundColor: ['rgb(105, 240, 174)', 'rgb(244, 67, 54)'],
+  //       //   hoverBackgroundColor: ['rgb(105, 240, 174)', 'rgb(244, 67, 54)'],
+  //       //   hoverBorderColor: '#000',
+  //       // },
+  //     ],
+  //   },
+  //   options: {
+  //     color: '#fff',
+  //     plugins: {
+  //       title: {
+  //         display: true,
+  //         text: 'Витрати та доходи',
+  //         color: '#fff',
+  //       },
+  //     },
+  //     scales: {
+  //       x: {
+  //         ticks: {
+  //           color: '#fff',
+  //         },
+  //       },
+  //       y: {
+  //         ticks: {
+  //           color: '#fff',
+  //         },
+  //       },
+  //     },
+  //   },
+  //   show: false,
+  // };
 
   constructor(private http: HttpClient) {}
 
@@ -151,6 +202,18 @@ export class StatisticsComponent implements OnInit {
       this.categoriesIncomeChart.show = true;
       this.categoriesOutcomeChart.show = true;
     });
+
+    // Get transactions
+    // this.http.get('/transactions').subscribe((res: any) => {
+    // this.incomeOutcomeChart.data.datasets[0].data = [100, 200, 300];
+    // this.incomeOutcomeChart.data.datasets[1].data = [10, 20, 30, 40, 60];
+    // this.incomeOutcomeChart.data.datasets[1].data = [
+    // this.summary.income,
+    // this.summary.outcome,
+    // ];
+
+    // this.incomeOutcomeChart.show = true;
+    // });
   }
 
   // Set date range
