@@ -31,8 +31,18 @@
   </mat-chip-list>
 </div>
 
-<div class="flex jc-center ai-center" *ngIf="chartData.datasets[0].data.length > 0">
+<div class="flex jc-center ai-center"
+  *ngIf="summaryChart.show && categoriesIncomeChart.show && categoriesOutcomeChart.show">
   <div style="width: 400px; height: 400px;">
-    <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'pie'"></canvas>
+    <canvas baseChart [data]="summaryChart.data" [options]="summaryChart.options" [type]="'pie'"
+      [legend]="true"></canvas>
+  </div>
+  <div style="width: 400px; height: 400px;">
+    <canvas baseChart [data]="categoriesIncomeChart.data" [options]="categoriesIncomeChart.options" [type]="'pie'"
+      [legend]="true"></canvas>
+  </div>
+  <div style="width: 400px; height: 400px;">
+    <canvas baseChart [data]="categoriesOutcomeChart.data" [options]="categoriesOutcomeChart.options" [type]="'pie'"
+      [legend]="true"></canvas>
   </div>
 </div>

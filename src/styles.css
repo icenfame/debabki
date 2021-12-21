@@ -41,27 +41,27 @@ input::-webkit-inner-spin-button {
 }
 
 .jc-center {
-  justify-content: center;
+  justify-content: center !important;
 }
 
 .ai-center {
-  align-items: center;
-}
-
-.jc-space-between {
-  justify-content: space-between;
+  align-items: center !important;
 }
 
 .as-center {
-  align-self: center;
+  align-self: center !important;
+}
+
+.jc-space-between {
+  justify-content: space-between !important;
 }
 
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .mb-0 {
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
 .mt-1 {
@@ -81,9 +81,9 @@ input::-webkit-inner-spin-button {
 }
 
 .user-select-none {
-  user-select: none;
+  user-select: none !important;
 }
 
 .cursor-pointer {
-  cursor: pointer;
+  cursor: pointer !important;
 }

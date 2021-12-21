@@ -25,12 +25,14 @@ export class CategoriesComponent implements OnInit {
 
   // Get data
   getData(): void {
-    this.http.get(`/categories/${this.dateRange}`).subscribe((res) => {
-      this.categories = res;
-    });
-
+    // Get summary
     this.http.get(`/summary/${this.dateRange}`).subscribe((res) => {
       this.summary = res;
+    });
+
+    // Get categories
+    this.http.get(`/categories/${this.dateRange}`).subscribe((res) => {
+      this.categories = res;
     });
   }
 
@@ -133,7 +135,7 @@ export class CategoriesComponent implements OnInit {
     this.dialog
       .open(TransactionDialogComponent, {
         data: {
-          dialogTitle: 'Редагування категорії',
+          dialogTitle: 'Редагування запису',
           dialogAction: 'РЕДАГУВАТИ',
           category,
           transaction: {
