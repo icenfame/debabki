@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
-import { FormControl, FormGroup } from '@angular/forms';
-import * as moment from 'moment';
 
 import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
 import { TransactionDialogComponent } from '../transaction-dialog/transaction-dialog.component';
@@ -14,41 +12,27 @@ import { TransactionDialogComponent } from '../transaction-dialog/transaction-di
 })
 export class CategoriesComponent implements OnInit {
   categories: any = [];
-  summary: any = [];
+  dateRange: any = [];
   expanded: any = [];
-
-  dateRange = new FormGroup({
-    start: new FormControl(moment().subtract(2, 'week').toDate()),
-    end: new FormControl(moment().toDate()),
-  });
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
   // Init
-  ngOnInit(): void {
-    this.getData();
-  }
+  ngOnInit(): void {}
 
   // Get data
   getData(): void {
-    const start = moment(this.dateRange.controls['start'].value).unix();
-    const end = moment(this.dateRange.controls['end'].value).unix();
-
-    // Get summary
-    this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
-      this.summary = res;
-    });
-
     // Get categories
-    this.http.get(`/categories/${start}/${end}`).subscribe((res) => {
-      this.categories = res;
-    });
+    this.http
+      .get(`/categories/${this.dateRange.start}/${this.dateRange.end}`)
+      .subscribe((res) => {
+        this.categories = res;
+      });
   }
 
   // Date rage change
-  dateRangeChange(event: any = null): void {
-    if (!event.value) return;
-
+  dateRangeChange(date: any): void {
+    this.dateRange = date;
     this.getData();
   }
 
@@ -60,7 +44,6 @@ export class CategoriesComponent implements OnInit {
           dialogTitle: 'Додавання категорії',
           dialogAction: 'ДОДАТИ',
           category: {},
-          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -85,7 +68,6 @@ export class CategoriesComponent implements OnInit {
           dialogTitle: 'Редагування категорії',
           dialogAction: 'РЕДАГУВАТИ',
           category: { ...category }, // Prevent copy by reference
-          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -119,7 +101,6 @@ export class CategoriesComponent implements OnInit {
           dialogAction: 'ДОДАТИ',
           category,
           transaction: { type },
-          dateRange: this.dateRange,
         },
       })
       .afterClosed()
@@ -155,7 +136,6 @@ export class CategoriesComponent implements OnInit {
             type: transaction.amount > 0,
           },
           prevAmount: transaction.amount,
-          dateRange: this.dateRange,
         },
       })
       .afterClosed()

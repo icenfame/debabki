@@ -30,6 +30,7 @@ import { CategoriesComponent } from './components/categories/categories.componen
 import { CategoryDialogComponent } from './components/category-dialog/category-dialog.component';
 import { TransactionDialogComponent } from './components/transaction-dialog/transaction-dialog.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
+import { SummaryComponent } from './summary/summary.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
     CategoryDialogComponent,
     TransactionDialogComponent,
     StatisticsComponent,
+    SummaryComponent,
   ],
   imports: [
     BrowserModule,

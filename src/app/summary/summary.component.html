@@ -1,0 +1,22 @@
+<div class="flex jc-center ai-center mt-1 mb-1">
+  <div class="flex mr-1">
+    <mat-form-field appearance="fill" color="accent" style="margin-bottom: -1.34375em;">
+      <mat-label>Оберіть період часу</mat-label>
+      <mat-date-range-input [rangePicker]="picker" [formGroup]="dateRange">
+        <input matStartDate placeholder="Початок" formControlName="start">
+        <input matEndDate placeholder="Кінець" formControlName="end" (dateChange)="dateRangeChange($event)">
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+  </div>
+
+  <mat-chip-list>
+    <mat-chip color="accent" selected>
+      Доходи за період: {{summary.income | currency:'UAH':'symbol': '1.2-2'}}
+    </mat-chip>
+    <mat-chip color="warn" selected>
+      Витрати за період: {{summary.outcome | currency:'UAH':'symbol': '1.2-2'}}
+    </mat-chip>
+  </mat-chip-list>
+</div>

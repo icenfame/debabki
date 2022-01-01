@@ -30,31 +30,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Categories
-app.get("/categories/:start/:end", async (req, res) => {
+app.get("/categories/:start/:end*?", async (req, res) => {
   const categories = await Category.find().lean();
 
-  for (const [index, category] of categories.entries()) {
-    const transactions = await Transaction.find({
-      categoryId: category._id,
-      date: {
-        $gte: moment(moment.unix(req.params.start)).toDate(),
-        $lte: moment(moment.unix(req.params.end)).toDate(),
-      },
-    })
-      .sort({ date: -1 })
-      .lean();
+  if (req.params.start && req.params.end) {
+    for (const [index, category] of categories.entries()) {
+      const transactions = await Transaction.find({
+        categoryId: category._id,
+        date: {
+          $gte: moment(moment.unix(req.params.start)).toDate(),
+          $lte: moment(moment.unix(req.params.end)).toDate(),
+        },
+      })
+        .sort({ date: -1 })
+        .lean();
 
-    categories[index].transactions = transactions;
-    categories[index].income = transactions.reduce(
-      (prevValue, currValue) =>
-        currValue.amount > 0 ? prevValue + currValue.amount : prevValue,
-      0
-    );
-    categories[index].outcome = transactions.reduce(
-      (prevValue, currValue) =>
-        currValue.amount < 0 ? prevValue + currValue.amount : prevValue,
-      0
-    );
+      categories[index].transactions = transactions;
+      categories[index].income = transactions.reduce(
+        (prevValue, currValue) =>
+          currValue.amount > 0 ? prevValue + currValue.amount : prevValue,
+        0
+      );
+      categories[index].outcome = transactions.reduce(
+        (prevValue, currValue) =>
+          currValue.amount < 0 ? prevValue + currValue.amount : prevValue,
+        0
+      );
+    }
   }
 
   res.json(categories);
