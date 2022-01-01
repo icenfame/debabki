@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ChartOptions, ChartData } from 'chart.js';
+import { FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 
 interface ChartObject {
   data: ChartData;
@@ -16,7 +18,11 @@ interface ChartObject {
 export class StatisticsComponent implements OnInit {
   categories: any = [];
   summary: any = [];
-  dateRange: string = '1 month';
+
+  dateRange = new FormGroup({
+    start: new FormControl(moment().subtract(2, 'week').toDate()),
+    end: new FormControl(moment().toDate()),
+  });
 
   // Summary chart
   summaryChart: ChartObject = {
@@ -155,8 +161,11 @@ export class StatisticsComponent implements OnInit {
 
   // Get data
   getData(): void {
+    const start = moment(this.dateRange.controls['start'].value).unix();
+    const end = moment(this.dateRange.controls['end'].value).unix();
+
     // Get summary
-    this.http.get(`/summary/${this.dateRange}`).subscribe((res) => {
+    this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
       this.summary = res;
 
       this.summaryChart.data.datasets[0].data = [
@@ -168,7 +177,7 @@ export class StatisticsComponent implements OnInit {
     });
 
     // Get categories
-    this.http.get(`/categories/${this.dateRange}`).subscribe((res) => {
+    this.http.get(`/categories/${start}/${end}`).subscribe((res) => {
       this.categories = res;
 
       // Income
@@ -216,8 +225,10 @@ export class StatisticsComponent implements OnInit {
     // });
   }
 
-  // Set date range
-  setDateRange(): void {
+  // Date range change
+  dateRangeChange(event: any = null): void {
+    if (!event.value) return;
+
     this.summaryChart.show = false;
     this.categoriesIncomeChart.show = false;
     this.categoriesOutcomeChart.show = false;

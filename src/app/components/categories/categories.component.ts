@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
+import { FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 
 import { CategoryDialogComponent } from '../category-dialog/category-dialog.component';
 import { TransactionDialogComponent } from '../transaction-dialog/transaction-dialog.component';
@@ -14,7 +16,11 @@ export class CategoriesComponent implements OnInit {
   categories: any = [];
   summary: any = [];
   expanded: any = [];
-  dateRange: string = '1 month';
+
+  dateRange = new FormGroup({
+    start: new FormControl(moment().subtract(2, 'week').toDate()),
+    end: new FormControl(moment().toDate()),
+  });
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
 
@@ -25,19 +31,24 @@ export class CategoriesComponent implements OnInit {
 
   // Get data
   getData(): void {
+    const start = moment(this.dateRange.controls['start'].value).unix();
+    const end = moment(this.dateRange.controls['end'].value).unix();
+
     // Get summary
-    this.http.get(`/summary/${this.dateRange}`).subscribe((res) => {
+    this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
       this.summary = res;
     });
 
     // Get categories
-    this.http.get(`/categories/${this.dateRange}`).subscribe((res) => {
+    this.http.get(`/categories/${start}/${end}`).subscribe((res) => {
       this.categories = res;
     });
   }
 
-  // Set date range
-  setDateRange(): void {
+  // Date rage change
+  dateRangeChange(event: any = null): void {
+    if (!event.value) return;
+
     this.getData();
   }
 

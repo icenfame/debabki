@@ -30,16 +30,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Categories
-app.get("/categories/:dateRange", async (req, res) => {
+app.get("/categories/:start/:end", async (req, res) => {
   const categories = await Category.find().lean();
 
   for (const [index, category] of categories.entries()) {
     const transactions = await Transaction.find({
       categoryId: category._id,
       date: {
-        $gte: moment()
-          .subtract(...req.params.dateRange.split(" "))
-          .toDate(),
+        $gte: moment(moment.unix(req.params.start)).toDate(),
+        $lte: moment(moment.unix(req.params.end)).toDate(),
       },
     })
       .sort({ date: -1 })
@@ -86,7 +85,7 @@ app.delete("/categories/:id", async (req, res) => {
 });
 
 // Summary
-app.get("/summary/:dateRange", async (req, res) => {
+app.get("/summary/:start/:end", async (req, res) => {
   const summary = await Transaction.aggregate([
     {
       $group: {
@@ -102,9 +101,13 @@ app.get("/summary/:dateRange", async (req, res) => {
                   {
                     $gte: [
                       "$date",
-                      moment()
-                        .subtract(...req.params.dateRange.split(" "))
-                        .toDate(),
+                      moment(moment.unix(req.params.start)).toDate(),
+                    ],
+                  },
+                  {
+                    $lte: [
+                      "$date",
+                      moment(moment.unix(req.params.end)).toDate(),
                     ],
                   },
                 ],
@@ -125,9 +128,13 @@ app.get("/summary/:dateRange", async (req, res) => {
                   {
                     $gte: [
                       "$date",
-                      moment()
-                        .subtract(...req.params.dateRange.split(" "))
-                        .toDate(),
+                      moment(moment.unix(req.params.start)).toDate(),
+                    ],
+                  },
+                  {
+                    $lte: [
+                      "$date",
+                      moment(moment.unix(req.params.end)).toDate(),
                     ],
                   },
                 ],
