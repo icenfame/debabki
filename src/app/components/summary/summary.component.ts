@@ -11,8 +11,14 @@ import * as moment from 'moment';
 export class SummaryComponent implements OnInit {
   summary: any = [];
   dateRange = new FormGroup({
-    start: new FormControl(moment().subtract(2, 'week').toDate()),
-    end: new FormControl(moment().toDate()),
+    start: new FormControl(
+      JSON.parse(localStorage.getItem('dateRange') ?? '[]')?.start ??
+        moment().subtract(2, 'week').toISOString()
+    ),
+    end: new FormControl(
+      JSON.parse(localStorage.getItem('dateRange') ?? '[]')?.end ??
+        moment().toISOString()
+    ),
   });
 
   @Output() dateChange = new EventEmitter<Object>();
@@ -25,8 +31,8 @@ export class SummaryComponent implements OnInit {
 
   // Get data
   getData(): void {
-    const start = moment(this.dateRange.controls['start'].value).unix();
-    const end = moment(this.dateRange.controls['end'].value).unix();
+    const start = moment(this.dateRange.controls['start'].value).toISOString();
+    const end = moment(this.dateRange.controls['end'].value).toISOString();
 
     // Get summary
     this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
@@ -40,6 +46,10 @@ export class SummaryComponent implements OnInit {
   dateRangeChange(event: any = null): void {
     if (!event.value) return;
 
+    const start = moment(this.dateRange.controls['start'].value).toISOString();
+    const end = moment(this.dateRange.controls['end'].value).toISOString();
+
+    localStorage.setItem('dateRange', JSON.stringify({ start, end }));
     this.getData();
   }
 }
