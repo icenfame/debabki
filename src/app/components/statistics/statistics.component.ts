@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ChartOptions, ChartData } from 'chart.js';
+import { FormControl, FormGroup } from '@angular/forms';
+import * as moment from 'moment';
 
 interface ChartObject {
   data: ChartData;
@@ -15,8 +17,12 @@ interface ChartObject {
 })
 export class StatisticsComponent implements OnInit {
   categories: any = [];
-  dateRange: any = [];
   summary: any = [];
+
+  dateRange = new FormGroup({
+    start: new FormControl(moment().subtract(2, 'week').toDate()),
+    end: new FormControl(moment().toDate()),
+  });
 
   // Summary chart
   summaryChart: ChartObject = {
@@ -149,52 +155,62 @@ export class StatisticsComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   // Init
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getData();
+  }
 
   // Get data
   getData(): void {
-    this.summaryChart.data.datasets[0].data = [
-      this.summary.income,
-      this.summary.outcome,
-    ];
+    const start = moment(this.dateRange.controls['start'].value).unix();
+    const end = moment(this.dateRange.controls['end'].value).unix();
+
+    // Get summary
+    this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
+      this.summary = res;
+
+      this.summaryChart.data.datasets[0].data = [
+        this.summary.income,
+        this.summary.outcome,
+      ];
+
+      this.summaryChart.show = true;
+    });
 
     // Get categories
-    this.http
-      .get(`/categories/${this.dateRange.start}/${this.dateRange.end}`)
-      .subscribe((res) => {
-        this.categories = res;
+    this.http.get(`/categories/${start}/${end}`).subscribe((res) => {
+      this.categories = res;
 
-        // Income
-        const categoriesIncome = this.categories.filter(
-          (category: any) => category.income > 0
-        );
+      // Income
+      const categoriesIncome = this.categories.filter(
+        (category: any) => category.income > 0
+      );
 
-        // Labels
-        this.categoriesIncomeChart.data.labels = categoriesIncome.map(
-          (category: any) => category.name
-        );
-        // Dataset
-        this.categoriesIncomeChart.data.datasets[0].data = categoriesIncome.map(
-          (category: any) => category.income
-        );
+      // Labels
+      this.categoriesIncomeChart.data.labels = categoriesIncome.map(
+        (category: any) => category.name
+      );
+      // Dataset
+      this.categoriesIncomeChart.data.datasets[0].data = categoriesIncome.map(
+        (category: any) => category.income
+      );
 
-        // Outcome
-        const categoriesOutcome = this.categories.filter(
-          (category: any) => category.outcome < 0
-        );
+      // Outcome
+      const categoriesOutcome = this.categories.filter(
+        (category: any) => category.outcome < 0
+      );
 
-        // Labels
-        this.categoriesOutcomeChart.data.labels = categoriesOutcome.map(
-          (category: any) => category.name
-        );
-        // Dataset
-        this.categoriesOutcomeChart.data.datasets[0].data =
-          categoriesOutcome.map((category: any) => category.outcome);
+      // Labels
+      this.categoriesOutcomeChart.data.labels = categoriesOutcome.map(
+        (category: any) => category.name
+      );
+      // Dataset
+      this.categoriesOutcomeChart.data.datasets[0].data = categoriesOutcome.map(
+        (category: any) => category.outcome
+      );
 
-        this.summaryChart.show = true;
-        this.categoriesIncomeChart.show = true;
-        this.categoriesOutcomeChart.show = true;
-      });
+      this.categoriesIncomeChart.show = true;
+      this.categoriesOutcomeChart.show = true;
+    });
 
     // Get transactions
     // this.http.get('/transactions').subscribe((res: any) => {
@@ -210,9 +226,8 @@ export class StatisticsComponent implements OnInit {
   }
 
   // Date range change
-  dateRangeChange(date: any = null): void {
-    this.dateRange = { start: date.start, end: date.end };
-    this.summary = date.summary;
+  dateRangeChange(event: any = null): void {
+    if (!event.value) return;
 
     this.summaryChart.show = false;
     this.categoriesIncomeChart.show = false;
