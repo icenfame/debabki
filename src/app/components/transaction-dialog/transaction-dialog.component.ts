@@ -14,7 +14,7 @@ export class TransactionDialogComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.http.get(`/categories/${this.data.dateRange}`).subscribe((res) => {
+    this.http.get(`/categories`).subscribe((res) => {
       this.data.categories = res;
     });
   }

@@ -18,8 +18,14 @@ export class CategoriesComponent implements OnInit {
   expanded: any = [];
 
   dateRange = new FormGroup({
-    start: new FormControl(moment().subtract(2, 'week').toDate()),
-    end: new FormControl(moment().toDate()),
+    start: new FormControl(
+      JSON.parse(localStorage.getItem('dateRange') ?? '[]')?.start ??
+        moment().subtract(2, 'week').toISOString()
+    ),
+    end: new FormControl(
+      JSON.parse(localStorage.getItem('dateRange') ?? '[]')?.end ??
+        moment().toISOString()
+    ),
   });
 
   constructor(private dialog: MatDialog, private http: HttpClient) {}
@@ -31,8 +37,8 @@ export class CategoriesComponent implements OnInit {
 
   // Get data
   getData(): void {
-    const start = moment(this.dateRange.controls['start'].value).unix();
-    const end = moment(this.dateRange.controls['end'].value).unix();
+    const start = moment(this.dateRange.controls['start'].value).toISOString();
+    const end = moment(this.dateRange.controls['end'].value).toISOString();
 
     // Get summary
     this.http.get(`/summary/${start}/${end}`).subscribe((res) => {
