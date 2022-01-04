@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 // Data base connection
 mongoose.connect("mongodb://localhost/debabki").then(() => {
@@ -37,8 +38,8 @@ app.get("/categories/:start/:end*?", async (req, res) => {
       const transactions = await Transaction.find({
         categoryId: category._id,
         date: {
-          $gte: new Date(req.params.start),
-          $lte: new Date(req.params.end),
+          $gte: moment(moment.unix(req.params.start)).toDate(),
+          $lte: moment(moment.unix(req.params.end)).toDate(),
         },
       })
         .sort({ date: -1 })
@@ -100,10 +101,16 @@ app.get("/summary/:start/:end", async (req, res) => {
                     $gt: ["$amount", 0],
                   },
                   {
-                    $gte: ["$date", new Date(req.params.start)],
+                    $gte: [
+                      "$date",
+                      moment(moment.unix(req.params.start)).toDate(),
+                    ],
                   },
                   {
-                    $lte: ["$date", new Date(req.params.end)],
+                    $lte: [
+                      "$date",
+                      moment(moment.unix(req.params.end)).toDate(),
+                    ],
                   },
                 ],
               },
@@ -121,10 +128,16 @@ app.get("/summary/:start/:end", async (req, res) => {
                     $lt: ["$amount", 0],
                   },
                   {
-                    $gte: ["$date", new Date(req.params.start)],
+                    $gte: [
+                      "$date",
+                      moment(moment.unix(req.params.start)).toDate(),
+                    ],
                   },
                   {
-                    $lte: ["$date", new Date(req.params.end)],
+                    $lte: [
+                      "$date",
+                      moment(moment.unix(req.params.end)).toDate(),
+                    ],
                   },
                 ],
               },
