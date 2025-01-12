@@ -1,6 +1,6 @@
 {
   "name": "debabki",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -10,7 +10,6 @@
     "server": "nodemon src/server",
     "all": "npm-run-all --parallel watch server"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "~13.0.0",
     "@angular/cdk": "^13.1.0",
